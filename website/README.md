@@ -1,4 +1,4 @@
-#### How to run
+## How to run
 
 * This server uses Flask. (`flask` & `werkzeug` need to be installed to run this server)
 
@@ -13,14 +13,14 @@ conda install -c conda-forge werkzeug
 
 
 
-#### How to use
+## How to use
 
 * `/video` is the page user can upload the video for detection
 * After uploading it, It will auto redirect to `/result` page, which should show the uploaded video is `Fake` or `Real`
 
 
 
-#### Bugfix
+## Bugfix
 
 * If you change the code, but the page doesn't change, it might be the old version still running on the port 5000.
 

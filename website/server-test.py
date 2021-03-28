@@ -31,6 +31,9 @@ def video():
 
 @app.route('/result/<file>')
 def result(file):
+    model = insightface.model_zoo.get_model('retinaface_r50_v1')
+    model.prepare(ctx_id=-1, nms=0.4)
+
     v_cap = cv2.VideoCapture(file)
     _, frame = v_cap.read()
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

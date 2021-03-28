@@ -2,15 +2,11 @@ from flask import Flask, redirect, request, render_template, url_for, send_file
 from werkzeug.utils import secure_filename
 import insightface
 import cv2
-import numpy as np
-import os
 import pandas as pd
 from PIL import Image
 import os
 from io import StringIO
 import numpy as np
-from skimage.io import imsave
-import matplotlib.pyplot as plt
 import base64
 
 app = Flask(__name__)
@@ -81,21 +77,14 @@ def download_file(filename):
         x, y, w, h = boundary[0:4]
         detected_face = frame[int(y):int(h), int(x):int(w)]
         facelist.append(detected_face)
-        cv2.rectangle(frame, (int(x), int(y)), (int(x) + int(w), int(y) + int(h)), (0, 255, 255), 3)
+        cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
     # In memory
     image_content = cv2.imencode('.jpg', frame)[1].tostring()
     encoded_image = base64.encodebytes(image_content)
     to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
     return render_template('result.html', content=to_send)
-    #return send_file(filename, mimetype='image/gif')
-    #return redirect(url_for('result'))
-
-
-@app.route('/result/<file>')
-def result(file):
-    return render_template('result.html', content=file)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')
 

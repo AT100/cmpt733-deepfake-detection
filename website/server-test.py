@@ -8,6 +8,7 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
+@app.route('/success/<name>')
 def ValuePredictor(video):
     v_cap = cv2.VideoCapture(video)
     _, frame = v_cap.read()
@@ -16,18 +17,16 @@ def ValuePredictor(video):
 
     bbox, landmark = model.detect(frame, threshold=0.5, scale=1.0)
     for each in bbox:
-        if labeling_dict[name] == 'FAKE':
-                boundary = each.tolist()
-                x, y, w, h  = boundary[0:4]
-                detected_face = frame[int(y):int(h), int(x):int(w)]
-                plt.imshow(detected_face)
+        boundary = each.tolist()
+        x, y, w, h  = boundary[0:4]
+        detected_face = frame[int(y):int(h), int(x):int(w)]
+        return detected_face
 
 @app.route('/video', methods=['POST', 'GET'])
 def video():
     if request.method == 'POST':
         f = request.files['file']
-        print(f.filename)
-        return redirect(url_for('result', file='File upload successfully.'))
+        return redirect(url_for('success', file='File upload successfully.'))
     else:
         return render_template('video.html')
 

@@ -1,5 +1,17 @@
 from flask import Flask, redirect, request, render_template, url_for
 from werkzeug.utils import secure_filename
+import insightface
+import urllib
+import urllib.request
+import cv2
+import numpy as np
+import os
+import pandas as pd
+from glob import glob
+import matplotlib.pylab as plt
+from PIL import Image
+import os
+
 
 app = Flask(__name__)
 
@@ -7,20 +19,6 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template('home.html')
-
-@app.route('/success')
-def ValuePredictor(f):
-    v_cap = cv2.VideoCapture(f)
-    _, frame = v_cap.read()
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    cv2.normalize(frame, frame, 0, 255, cv2.NORM_MINMAX)
-
-    bbox, landmark = model.detect(frame, threshold=0.5, scale=1.0)
-    for each in bbox:
-        boundary = each.tolist()
-        x, y, w, h  = boundary[0:4]
-        detected_face = frame[int(y):int(h), int(x):int(w)]
-        return detected_face
 
 @app.route('/video', methods=['POST', 'GET'])
 def video():

@@ -64,18 +64,18 @@ def download_file(filename):
     #CV2 does not like relative path
     v_cap = cv2.VideoCapture('/Users/dugongzzz/Documents/GitHub/cmpt733-deepfake-detection/website/UPLOAD_FOLDER/' + filename)
     _, frame = v_cap.read()
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    cv2.normalize(frame, frame, 0, 255, cv2.NORM_MINMAX)
+    frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    cv2.normalize(frame1, frame1, 0, 255, cv2.NORM_MINMAX)
 
     model = insightface.model_zoo.get_model('retinaface_r50_v1')
     model.prepare(ctx_id=-1, nms=0.4)
 
-    bbox, landmark = model.detect(frame, threshold=0.5, scale=1.0)
+    bbox, landmark = model.detect(frame1, threshold=0.5, scale=1.0)
     facelist = []
     for each in bbox:
         boundary = each.tolist()
         x, y, w, h = boundary[0:4]
-        detected_face = frame[int(y):int(h), int(x):int(w)]
+        detected_face = frame1[int(y):int(h), int(x):int(w)]
         facelist.append(detected_face)
         cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 

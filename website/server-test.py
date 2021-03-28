@@ -8,9 +8,9 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/success/<name>')
-def ValuePredictor(video):
-    v_cap = cv2.VideoCapture(video)
+@app.route('/success')
+def ValuePredictor(f):
+    v_cap = cv2.VideoCapture(f)
     _, frame = v_cap.read()
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     cv2.normalize(frame, frame, 0, 255, cv2.NORM_MINMAX)
@@ -26,15 +26,24 @@ def ValuePredictor(video):
 def video():
     if request.method == 'POST':
         f = request.files['file']
-        return redirect(url_for('success', file='File upload successfully.'))
+        return redirect(url_for('result', file='File upload successfully.'))
     else:
         return render_template('video.html')
 
 
 @app.route('/result/<file>')
 def result(file):
-    return render_template('result.html', content=file)
+    v_cap = cv2.VideoCapture(file)
+    _, frame = v_cap.read()
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    cv2.normalize(frame, frame, 0, 255, cv2.NORM_MINMAX)
 
+    bbox, landmark = model.detect(frame, threshold=0.5, scale=1.0)
+    for each in bbox:
+        boundary = each.tolist()
+        x, y, w, h = boundary[0:4]
+        detected_face = frame[int(y):int(h), int(x):int(w)]
+        return detected_face
 
 if __name__ == "__main__":
     app.run(debug=True)

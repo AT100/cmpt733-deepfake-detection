@@ -59,7 +59,8 @@ def video():
 #         #     print("That file extension is not allowed")
 #         #     return render_template('video.html')
 
-@app.route("/UPLOAD_FOLDER/<filename>", methods = ['GET'])
+#@app.route("/UPLOAD_FOLDER/<filename>", methods = ['GET'])
+@app.route("/tmp/<filename>", methods = ['GET'])
 def download_file(filename):
     #CV2 does not like relative path
     v_cap = cv2.VideoCapture('/Users/dugongzzz/Documents/GitHub/cmpt733-deepfake-detection/website/UPLOAD_FOLDER/' + filename)

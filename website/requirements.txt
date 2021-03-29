@@ -1,2 +1,6 @@
 Flask
 gunicorn==20.0.4
+insightface
+cv2
+os
+base64

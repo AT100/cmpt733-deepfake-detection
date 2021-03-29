@@ -2,11 +2,7 @@ from flask import Flask, redirect, request, render_template, url_for, send_file
 from werkzeug.utils import secure_filename
 import insightface
 import cv2
-import pandas as pd
-from PIL import Image
 import os
-from io import StringIO
-import numpy as np
 import base64
 
 app = Flask(__name__)

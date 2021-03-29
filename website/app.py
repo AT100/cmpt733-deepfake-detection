@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 
 UPLOAD_FOLDER = os.path.basename('uploads')
-app.config['UPLOAD_FOLDER'] = 'UPLOAD_FOLDER/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
 
 
@@ -56,10 +56,10 @@ def video():
 #         #     return render_template('video.html')
 
 #@app.route("/UPLOAD_FOLDER/<filename>", methods = ['GET'])
-@app.route("/tmp/<filename>", methods = ['GET'])
+@app.route("/uploads/<filename>", methods = ['GET'])
 def download_file(filename):
     #CV2 does not like relative path
-    v_cap = cv2.VideoCapture('/Users/dugongzzz/Documents/GitHub/cmpt733-deepfake-detection/website/UPLOAD_FOLDER/' + filename)
+    v_cap = cv2.VideoCapture(UPLOAD_FOLDER + filename)
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     cv2.normalize(frame1, frame1, 0, 255, cv2.NORM_MINMAX)

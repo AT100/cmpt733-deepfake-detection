@@ -2,4 +2,4 @@ gunicorn
 Flask
 insightface==0.1.5
 opencv-python==4.5.1.48
-mxnet-cu101
+mxnet-native

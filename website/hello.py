@@ -96,12 +96,18 @@ def result(filename):
         x, y, w, h = boundary[0:4]
         cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
+    scale = 0.1
+    width = int(frame.shape[1] * scale)
+    height = int(frame.shape[0] * scale)
+    resized_img_with_scaling = cv2.resize(frame, (width, height))
+
     # In memory
-    image_content = cv2.imencode('.jpg', frame)[1].tostring()
+    image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
     encoded_image = base64.encodebytes(image_content)
     to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
     return render_template('result.html', content=to_send)
 
 
 if __name__ == "__main__":
+    #app.run(host='0.0.0.0')
     app.run(host='0.0.0.0')

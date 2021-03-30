@@ -10,8 +10,6 @@ import base64
 import boto3
 
 
-# logger = logging.Logger('catch_all')
-
 app = Flask(__name__)
 
 s3 = boto3.client('s3',
@@ -19,12 +17,11 @@ s3 = boto3.client('s3',
                     aws_secret_access_key= 'v3SaTyw8LwySHvfX8di8fcUmoPbq66RVl+X2qpDc'
                     #aws_session_token='secret token here'
                      )
-BUCKET_NAME='nbayeah'
 
-UPLOAD_FOLDER ='static/uploads/'
-DOWNLOAD_FOLDER = 'static/downloads/'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
+# UPLOAD_FOLDER ='static/uploads/'
+# DOWNLOAD_FOLDER = 'static/downloads/'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
 

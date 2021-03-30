@@ -15,13 +15,7 @@ app = Flask(__name__)
 s3 = boto3.client('s3',
                     aws_access_key_id='AKIA4VF4SCA5INBHU4TJ',
                     aws_secret_access_key= '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'
-                    #aws_session_token='secret token here'
                      )
-
-# UPLOAD_FOLDER ='static/uploads/'
-# DOWNLOAD_FOLDER = 'static/downloads/'
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
 
@@ -47,7 +41,7 @@ def video():
                 Key=filename
             )
             print(filename + "video saved")
-            return redirect('/result')
+            return redirect(url_for('result', filename=filename))
     else:
         return render_template('video.html')
 
@@ -72,10 +66,7 @@ def video():
 #         #     return render_template('video.html')
 
 @app.route("/result/<filename>", methods = ['GET'])
-def download_file(filename):
-    # s3.download_file(app.config['nbayeah'],
-    #                  filename,
-    #                  os.path.join('tmp',filename))
+def result(filename):
     response = s3.generate_presigned_url('get_object',
                                              Params={'Bucket': 'nbayeah', 'Key': filename},
                                              ExpiresIn=24)

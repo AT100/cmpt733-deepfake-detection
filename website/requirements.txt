@@ -1,6 +1,5 @@
 gunicorn
 Flask
-insightface==0.1.5
+facenet-pytorch
 opencv-python-headless
-mxnet-native
 boto3

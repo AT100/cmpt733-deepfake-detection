@@ -2,12 +2,14 @@ from flask import Flask, redirect, request, render_template, url_for, send_file,
 from werkzeug.utils import secure_filename
 # from camera import VideoCamera
 # from pytube import YouTube
-import insightface
+#import insightface
+from facenet_pytorch import MTCNN
 # import logging
 import cv2
 import os
 import base64
 import boto3
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -94,6 +96,17 @@ def result(filename):
     #     cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
     #
 
+    new_frame = Image.fromarray(frame)
+    mtcnn = MTCNN(select_largest=False, keep_all=True, post_process=False)  # select_largest=False, device='cuda')
+    #test = mtcnn(new_frame)
+
+    # detect faces in the image
+    faces = mtcnn.detect(new_frame)
+
+    for each in faces[0]:
+        each1 = each.tolist()
+        x, y, w, h = each1
+        cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
     scale = 0.5
     width = int(frame.shape[1] * scale)

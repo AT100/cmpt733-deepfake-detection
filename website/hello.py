@@ -7,13 +7,19 @@ import insightface
 import cv2
 import os
 import base64
-#import boto3
+import boto3
 
 
 # logger = logging.Logger('catch_all')
 
 app = Flask(__name__)
 
+s3 = boto3.client('s3',
+                    aws_access_key_id='AKIA4VF4SCA5FRN2XZOI',
+                    aws_secret_access_key= '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'
+                    #aws_session_token='secret token here'
+                     )
+BUCKET_NAME='nbayeah'
 
 UPLOAD_FOLDER ='static/uploads/'
 DOWNLOAD_FOLDER = 'static/downloads/'
@@ -37,7 +43,11 @@ def video():
         f = request.files['file']
         if allowed_file(f.filename):
             filename = secure_filename(f.filename)
-            f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            s3.upload_file(
+                Bucket='nbayeah',
+                Filename=filename,
+                Key=filename
+            )
             print("Image saved")
             return redirect('/result')
     else:
@@ -69,7 +79,10 @@ def download_file(filename):
     # s3.download_file(app.config['nbayeah'],
     #                  filename,
     #                  os.path.join('tmp',filename))
-    v_cap = cv2.VideoCapture(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+    response = s3.generate_presigned_url('get_object',
+                                             Params={'Bucket': 'nbayeah', 'Key': filename},
+                                             ExpiresIn=24)
+    v_cap = cv2.VideoCapture(response)
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     cv2.normalize(frame1, frame1, 0, 255, cv2.NORM_MINMAX)

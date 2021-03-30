@@ -13,8 +13,8 @@ import boto3
 app = Flask(__name__)
 
 s3 = boto3.client('s3',
-                    aws_access_key_id='AKIA4VF4SCA5FRN2XZOI',
-                    aws_secret_access_key= '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'
+                    aws_access_key_id='AKIA4VF4SCA5INBHU4TJ',
+                    aws_secret_access_key= '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'
                     #aws_session_token='secret token here'
                      )
 

@@ -35,15 +35,15 @@ def video():
         file = request.files['file']
         if allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            s3.upload_fileobj(
-                file,
-                'nbayeah',
-                file.filename,
-                ExtraArgs={
-                    "ACL": 'public-read',
-                    "ContentType": file.content_type  # Set appropriate content type as per the file
-                }
-            )
+            # s3.upload_fileobj(
+            #     file,
+            #     'nbayeah',
+            #     file.filename,
+            #     ExtraArgs={
+            #         "ACL": 'public-read',
+            #         "ContentType": file.content_type  # Set appropriate content type as per the file
+            #     }
+            # )
             # s3.upload_file(
             #     Bucket='nbayeah',
             #     Filename=filename,
@@ -102,10 +102,12 @@ def result(filename):
     resized_img_with_scaling = cv2.resize(frame, (width, height))
 
     # In memory
-    image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
-    encoded_image = base64.encodebytes(image_content)
-    to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
-    return render_template('result.html', content=to_send)
+    # image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
+    # encoded_image = base64.encodebytes(image_content)
+    # to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
+    #ret, jpeg = cv2.imencode('.jpg', resized_img_with_scaling)
+    img = cv2.imencode('.jpg', resized_img_with_scaling)[1].tobytes()
+    return render_template('result.html', content=img)
 
 
 if __name__ == "__main__":

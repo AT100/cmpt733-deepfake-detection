@@ -4,12 +4,17 @@ import insightface
 import cv2
 import os
 import base64
+#import boto3
+
 
 app = Flask(__name__)
 
 
-UPLOAD_FOLDER = os.path.basename('uploads')
+UPLOAD_FOLDER ='static/uploads/'
+DOWNLOAD_FOLDER = 'static/downloads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
+
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
 
 
@@ -17,6 +22,12 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+# s3 = boto3.client('s3',
+#                     aws_access_key_id='AKIA4VF4SCA5FRN2XZOI',
+#                     aws_secret_access_key= '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'
+#                     #aws_session_token='secret token here'
+#                      )
+# BUCKET_NAME='nbayeah'
 
 @app.route('/')
 def home():
@@ -29,8 +40,14 @@ def video():
         if allowed_file(f.filename):
             filename = secure_filename(f.filename)
             f.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            # s3.upload_file(
+            #     Bucket='nbayeah',
+            #     Filename=filename,
+            #     Key=filename
+            # )
             print("Image saved")
-            return redirect('/UPLOAD_FOLDER/'+ filename)
+            return redirect('/result')
+            #return redirect('/UPLOAD_FOLDER/'+ filename)
     else:
         return render_template('video.html')
 
@@ -56,10 +73,13 @@ def video():
 #         #     return render_template('video.html')
 
 #@app.route("/UPLOAD_FOLDER/<filename>", methods = ['GET'])
-@app.route("/uploads/<filename>", methods = ['GET'])
+@app.route("/result/<filename>", methods = ['GET'])
 def download_file(filename):
     #CV2 does not like relative path
-    v_cap = cv2.VideoCapture(UPLOAD_FOLDER + filename)
+    # s3.download_file(app.config['nbayeah'],
+    #                  filename,
+    #                  os.path.join('tmp',filename))
+    v_cap = cv2.VideoCapture(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     cv2.normalize(frame1, frame1, 0, 255, cv2.NORM_MINMAX)

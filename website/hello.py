@@ -9,13 +9,12 @@ import os
 import base64
 import boto3
 
-
 app = Flask(__name__)
 
 s3 = boto3.client('s3',
-                    aws_access_key_id='AKIA4VF4SCA5INBHU4TJ',
-                    aws_secret_access_key= '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'
-                     )
+                  aws_access_key_id='AKIA4VF4SCA5INBHU4TJ',
+                  aws_secret_access_key='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'
+                  )
 
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
 
@@ -24,52 +23,64 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+
 @app.route('/')
 def home():
     return render_template('home.html')
 
+
 @app.route('/video', methods=['POST', 'GET'])
 def video():
     if request.method == 'POST':
-        f = request.files['file']
-        if allowed_file(f.filename):
-            filename = secure_filename(f.filename)
-            f.save(filename)
-            s3.upload_file(
-                Bucket='nbayeah',
-                Filename=filename,
-                Key=filename
+        file = request.files['file']
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            s3.upload_fileobj(
+                file,
+                'nbayeah',
+                file.filename,
+                ExtraArgs={
+                    "ACL": 'public-read',
+                    "ContentType": file.content_type  # Set appropriate content type as per the file
+                }
             )
-            print(filename + "video saved")
+            # s3.upload_file(
+            #     Bucket='nbayeah',
+            #     Filename=filename,
+            #     Key=filename
+            # )
+            print(os.getcwd() + ' ' + filename + " video saved")
+            #
             return redirect(url_for('result', filename=filename))
     else:
         return render_template('video.html')
+
 
 # @app.route('/video', methods=['POST', 'GET'])
 # def video():
 #     if request.method == 'POST':
 #         file = request.files['file']
 #         return redirect(url_for('result', file='File upload successfully.'))
-#         #
-#         # if file.filename == "":
-#         #     print("No filename")
-#         #     return render_template('video.html')
-#
-#         # if allowed_file(file.filename):
-#         #     filename = secure_filename(file.filename)
-#         #     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-#         #     print("Image saved")
-#         #     return redirect(url_for('result', file='File upload successfully.'))
-#         #
-#         # else:
-#         #     print("That file extension is not allowed")
-#         #     return render_template('video.html')
+        #
+        # if file.filename == "":
+        #     print("No filename")
+        #     return render_template('video.html')
+
+        # if allowed_file(file.filename):
+        #     filename = secure_filename(file.filename)
+        #     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        #     print("Image saved")
+        #     return redirect(url_for('result', file='File upload successfully.'))
+        #
+        # else:
+        #     print("That file extension is not allowed")
+        #     return render_template('video.html')
 
 @app.route("/result/<filename>", methods = ['GET'])
 def result(filename):
     response = s3.generate_presigned_url('get_object',
                                              Params={'Bucket': 'nbayeah', 'Key': filename},
-                                             ExpiresIn=24)
+                                             ExpiresIn=72)
     v_cap = cv2.VideoCapture(response)
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -79,12 +90,12 @@ def result(filename):
     model.prepare(ctx_id=-1, nms=0.4)
 
     bbox, landmark = model.detect(frame1, threshold=0.5, scale=1.0)
-    facelist = []
+    #facelist = []
     for each in bbox:
         boundary = each.tolist()
         x, y, w, h = boundary[0:4]
-        detected_face = frame1[int(y):int(h), int(x):int(w)]
-        facelist.append(detected_face)
+        #detected_face = frame1[int(y):int(h), int(x):int(w)]
+        #facelist.append(detected_face)
         cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
     # In memory

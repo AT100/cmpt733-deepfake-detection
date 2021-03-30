@@ -90,12 +90,10 @@ def result(filename):
     model.prepare(ctx_id=-1, nms=0.4)
 
     bbox, landmark = model.detect(frame1, threshold=0.5, scale=1.0)
-    #facelist = []
+
     for each in bbox:
         boundary = each.tolist()
         x, y, w, h = boundary[0:4]
-        #detected_face = frame1[int(y):int(h), int(x):int(w)]
-        #facelist.append(detected_face)
         cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
     # In memory

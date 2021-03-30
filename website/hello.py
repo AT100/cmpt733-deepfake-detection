@@ -40,12 +40,13 @@ def video():
         f = request.files['file']
         if allowed_file(f.filename):
             filename = secure_filename(f.filename)
+            f.save(filename)
             s3.upload_file(
                 Bucket='nbayeah',
                 Filename=filename,
                 Key=filename
             )
-            print("Image saved")
+            print(filename + "video saved")
             return redirect('/result')
     else:
         return render_template('video.html')
@@ -72,7 +73,6 @@ def video():
 
 @app.route("/result/<filename>", methods = ['GET'])
 def download_file(filename):
-    #CV2 does not like relative path
     # s3.download_file(app.config['nbayeah'],
     #                  filename,
     #                  os.path.join('tmp',filename))
@@ -101,6 +101,7 @@ def download_file(filename):
     encoded_image = base64.encodebytes(image_content)
     to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
     return render_template('result.html', content=to_send)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

@@ -3,3 +3,4 @@ Flask
 insightface==0.1.5
 opencv-python-headless
 mxnet-native
+boto3

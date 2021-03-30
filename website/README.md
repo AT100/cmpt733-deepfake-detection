@@ -6,6 +6,9 @@
 #conda
 conda install -c anaconda flask
 conda install -c conda-forge werkzeug
+
+#pytube to download youtube video
+pip install git+https://github.com/nficano/pytube.git
 ```
 
 * Type `python .\server.py` to run the server
@@ -18,7 +21,11 @@ conda install -c conda-forge werkzeug
 * `/video` is the page user can upload the video for detection
 * After uploading it, It will auto redirect to `/result` page, which should show the uploaded video is `Fake` or `Real`
 
+* `/youtube` page you can paste the YouTube link that you wanna detect. 
 
+  It will download the YouTube video to the `Youtube` directory.
+
+  Whatever download/detect success or not, it will redirect to the page `result`.
 
 ## Bugfix
 

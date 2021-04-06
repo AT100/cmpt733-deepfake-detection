@@ -1,10 +1,8 @@
 from flask import Flask, redirect, request, render_template, url_for, send_file, Response
 from werkzeug.utils import secure_filename
-# from camera import VideoCamera
 # from pytube import YouTube
 from facenet_pytorch import MTCNN
 # import logging
-from os import getenv
 import os
 import cv2
 import base64
@@ -18,7 +16,8 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 s3 = boto3.client('s3', AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY)
 
-ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
+ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG"]
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -49,36 +48,6 @@ def home():
             return redirect(url_for('result', filename=filename))
     else:
         return render_template('video.html')
-
-
-# @app.route('/video', methods=['POST', 'GET'])
-# def video():
-#     if request.method == 'POST':
-#         file = request.files['file']
-#
-#         if file.filename == "":
-#             print("No filename")
-#             return render_template('video.html')
-#
-#         if allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#             s3.upload_fileobj(
-#                 file,
-#                 'nbayeah',
-#                 file.filename,
-#                 ExtraArgs={
-#                     "ACL": 'public-read',
-#                     "ContentType": file.content_type  # Set appropriate content type as per the file
-#                 }
-#             )
-#
-#             return redirect(url_for('result', filename=filename))
-#         else:
-#             print("That file extension is not allowed")
-#             return render_template('video.html')
-#
-#     else:
-#         return render_template('video.html')
 
 
 @app.route("/result/<filename>", methods = ['GET'])

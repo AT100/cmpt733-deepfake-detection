@@ -2,4 +2,7 @@ runtime: python
 runtime_config:
   python_version: 3
 env: flex
+env_variables:
+  AWS_ACCESS_KEY_ID: "AKIAVT23KN3ZE5FUXH6R"
+  AWS_SECRET_ACCESS_KEY: "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"
 entrypoint: gunicorn -b :$PORT hello:app

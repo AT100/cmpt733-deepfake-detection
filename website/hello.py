@@ -4,18 +4,19 @@ from werkzeug.utils import secure_filename
 # from pytube import YouTube
 from facenet_pytorch import MTCNN
 # import logging
-import cv2
+from os import getenv
 import os
+import cv2
 import base64
 import boto3
 from PIL import Image
 
 app = Flask(__name__)
 
-s3 = boto3.client('s3',
-                  aws_access_key_id='AKIA4VF4SCA5INBHU4TJ',
-                  aws_secret_access_key='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'
-                  )
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
+s3 = boto3.client('s3', AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY)
 
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG", "GIF"]
 
@@ -37,7 +38,7 @@ def home():
             filename = secure_filename(file.filename)
             s3.upload_fileobj(
                 file,
-                'nbayeah',
+                'cmpt733sfu',
                 file.filename,
                 ExtraArgs={
                     "ACL": 'public-read',
@@ -50,40 +51,40 @@ def home():
         return render_template('video.html')
 
 
-@app.route('/video', methods=['POST', 'GET'])
-def video():
-    if request.method == 'POST':
-        file = request.files['file']
-
-        if file.filename == "":
-            print("No filename")
-            return render_template('video.html')
-
-        if allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            s3.upload_fileobj(
-                file,
-                'nbayeah',
-                file.filename,
-                ExtraArgs={
-                    "ACL": 'public-read',
-                    "ContentType": file.content_type  # Set appropriate content type as per the file
-                }
-            )
-
-            return redirect(url_for('result', filename=filename))
-        else:
-            print("That file extension is not allowed")
-            return render_template('video.html')
-
-    else:
-        return render_template('video.html')
+# @app.route('/video', methods=['POST', 'GET'])
+# def video():
+#     if request.method == 'POST':
+#         file = request.files['file']
+#
+#         if file.filename == "":
+#             print("No filename")
+#             return render_template('video.html')
+#
+#         if allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             s3.upload_fileobj(
+#                 file,
+#                 'nbayeah',
+#                 file.filename,
+#                 ExtraArgs={
+#                     "ACL": 'public-read',
+#                     "ContentType": file.content_type  # Set appropriate content type as per the file
+#                 }
+#             )
+#
+#             return redirect(url_for('result', filename=filename))
+#         else:
+#             print("That file extension is not allowed")
+#             return render_template('video.html')
+#
+#     else:
+#         return render_template('video.html')
 
 
 @app.route("/result/<filename>", methods = ['GET'])
 def result(filename):
     response = s3.generate_presigned_url('get_object',
-                                             Params={'Bucket': 'nbayeah', 'Key': filename},
+                                             Params={'Bucket': 'cmpt733sfu', 'Key': filename},
                                              ExpiresIn=300)
     v_cap = cv2.VideoCapture(response)
     print(response)

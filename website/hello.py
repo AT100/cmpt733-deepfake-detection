@@ -8,13 +8,23 @@ import cv2
 import base64
 import boto3
 from PIL import Image
+from google.cloud import datastore
 
 app = Flask(__name__)
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+client = datastore.Client()
+key = client.key('Settings', 5634161670881280) # note: entity name not property
+# get by key for this entity
+result = client.get(key)
 
-s3 = boto3.client('s3', AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY)
+# S3_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
+# S3_CODE = os.environ.get('AWS_SECRET_ACCESS_KEY')
+S3_KEY = result['s3_code']
+S3_CODE = result['s3_key']
+print(S3_KEY)
+print(S3_CODE)
+
+s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
 
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG"]
 

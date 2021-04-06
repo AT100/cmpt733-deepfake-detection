@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 # from pytube import YouTube
 from facenet_pytorch import MTCNN
 # import logging
-import os
+#import os
 import cv2
 import base64
 import boto3
@@ -12,17 +12,15 @@ from google.cloud import datastore
 
 app = Flask(__name__)
 
+#os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/dugongzzz/Downloads/cmpt733-309217-e4dd118f17bf.json"
 client = datastore.Client()
-key = client.key('Settings', 5634161670881280) # note: entity name not property
+key = client.key('Settings', 5634161670881280)
 # get by key for this entity
 result = client.get(key)
 
-# S3_KEY = os.environ.get('AWS_ACCESS_KEY_ID')
-# S3_CODE = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
 S3_KEY = result['s3_code']
 S3_CODE = result['s3_key']
-print(S3_KEY)
-print(S3_CODE)
 
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
 
@@ -64,8 +62,9 @@ def home():
 def result(filename):
     response = s3.generate_presigned_url('get_object',
                                              Params={'Bucket': 'cmpt733sfu', 'Key': filename},
-                                             ExpiresIn=300)
-    v_cap = cv2.VideoCapture(response)
+                                             ExpiresIn=500)
+    url = 'https://cmpt733sfu.s3.amazonaws.com/' + filename
+    v_cap = cv2.VideoCapture(url)
     print(response)
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

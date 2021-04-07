@@ -4,3 +4,4 @@ facenet-pytorch
 opencv-python-headless
 boto3
 google-cloud-datastore
+keras

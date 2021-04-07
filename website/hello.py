@@ -9,8 +9,13 @@ import base64
 import boto3
 from PIL import Image
 from google.cloud import datastore
+import keras
+from keras.models import load_model
 
 app = Flask(__name__)
+
+model_url = 'https://storage.googleapis.com/cmpt733/model.h5'
+new_model = load_model(model_url)
 
 #os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/dugongzzz/Downloads/cmpt733-309217-e4dd118f17bf.json"
 client = datastore.Client()
@@ -25,6 +30,7 @@ S3_CODE = result['s3_key']
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
 
 ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG"]
+
 
 
 def allowed_file(filename):
@@ -86,6 +92,8 @@ def result(filename):
     width = int(frame.shape[1] * scale)
     height = int(frame.shape[0] * scale)
     resized_img_with_scaling = cv2.resize(frame, (width, height))
+
+    new_model.predict(resized_img_with_scaling)
 
     # In memory
     image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()

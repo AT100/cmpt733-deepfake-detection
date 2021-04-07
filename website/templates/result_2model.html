@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="result.css">
+    <title>Result</title>
+    <h1>Result of DeepFake Detection</h1>
+</head>
+<body>
+	<div class="flex-container">
+
+    <div class="flex-child magenta">
+      Result of MTCNN Model
+      <div class="image_result">
+      	<img src="{{content}}" alt="Screenshot with Facial Detection">
+      </div>
+    </div>
+  
+    <div class="flex-child green">
+      Result of Xception Model
+      <div class="image_result">
+      	<img src="{{content}}" alt="Screenshot with Facial Detection">
+      </div>
+    </div>
+  
+    </div>
+</body>
+</html>

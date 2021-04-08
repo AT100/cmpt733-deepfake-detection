@@ -102,7 +102,7 @@ def result(filename):
     #image = load_img(detected_face, target_size=(256, 256))
     input_arr = img_to_array(detected_face)
     input_arr = np.array([input_arr])  # Convert single image to a batch.
-    #predictions = new_model.predict(input_arr)
+    predictions = round(new_model.predict(input_arr))
 
     # img = img_to_array(detected_face) / 255.0
     # img = np.expand_dims(img, axis=0)
@@ -112,11 +112,11 @@ def result(filename):
     image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
     encoded_image = base64.encodebytes(image_content)
     to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
-    return render_template('result.html', content=to_send)
-    # if predictions == "1":
-    #     return render_template('result.html', content=to_send)
-    # else:
-    #     return render_template('result.html', content=to_send)
+    #return render_template('result.html', content=to_send)
+    if predictions == 1:
+         return render_template('result.html', content=to_send)
+    else:
+         return render_template('result_fake.html', content=to_send)
 
 
 if __name__ == "__main__":

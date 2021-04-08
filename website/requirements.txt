@@ -3,3 +3,10 @@ Flask
 facenet-pytorch
 opencv-python-headless
 boto3
+google-cloud-datastore
+Keras
+Keras-Preprocessing
+numpy
+gcsfs
+h5py==2.10.0
+tensorflow

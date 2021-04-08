@@ -2,7 +2,6 @@ from flask import Flask, redirect, request, render_template, url_for
 from werkzeug.utils import secure_filename
 # from pytube import YouTube
 from facenet_pytorch import MTCNN
-# import logging
 #import os
 import cv2
 import base64
@@ -91,7 +90,15 @@ def result(filename):
     for each in faces[0]:
         each1 = each.tolist()
         x, y, w, h = each1
-        detected_face = frame[int(y):int(h), int(x):int(w)]
+        top_left = int((int(y) + int(h)) / 2 - 128)
+        bottom_left = int((int(y) + int(h)) / 2 + 128)
+
+        top_right = int((int(x) + int(w)) / 2 - 128)
+        bottom_right = int((int(x) + int(w)) / 2 + 128)
+
+        detected_face = frame[top_left:bottom_left, top_right:bottom_right]
+        #detected_face = frame[int(y):int(h), int(x):int(w)]
+        #detected_face = frame[int(y):255, int(x):255]
         cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
     scale = 0.5

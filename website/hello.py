@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, render_template, url_for, send_file, Response
+from flask import Flask, redirect, request, render_template, url_for
 from werkzeug.utils import secure_filename
 # from pytube import YouTube
 from facenet_pytorch import MTCNN
@@ -10,21 +10,21 @@ import boto3
 from PIL import Image
 from google.cloud import datastore
 import keras
-from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
+from keras.preprocessing.image import img_to_array
 from keras.models import load_model
 import numpy as np
-import gcsfs
-import h5py
+# import gcsfs
+# import h5py
 import tensorflow as tf
-from tensorflow.python.lib.io import file_io
+# from tensorflow.python.lib.io import file_io
 
 app = Flask(__name__)
 
-MODEL_PATH = 'gs://cmpt733/model.h5'
-FS = gcsfs.GCSFileSystem(project='cmpt733')
-with FS.open(MODEL_PATH, 'rb') as model_file:
-    model_gcs = h5py.File(model_file, 'r')
-    new_model = load_model(model_gcs)
+# MODEL_PATH = 'gs://cmpt733/model.h5'
+# FS = gcsfs.GCSFileSystem(project='cmpt733')
+# with FS.open(MODEL_PATH, 'rb') as model_file:
+#     model_gcs = h5py.File(model_file, 'r')
+#     new_model = load_model(model_gcs)
 
 
 # model_file = file_io.FileIO(MODEL_PATH, mode='rb')
@@ -45,7 +45,7 @@ S3_KEY = result['s3_code']
 S3_CODE = result['s3_key']
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
 
-ALLOWED_EXTENSIONS = ["mp4", "JPG", "PNG"]
+ALLOWED_EXTENSIONS = ["mp4"]
 
 
 def allowed_file(filename):
@@ -81,12 +81,11 @@ def home():
 
 @app.route("/result/<filename>", methods = ['GET'])
 def result(filename):
-    response = s3.generate_presigned_url('get_object',
-                                             Params={'Bucket': 'cmpt733sfu', 'Key': filename},
-                                             ExpiresIn=500)
+    # response = s3.generate_presigned_url('get_object',
+    #                                          Params={'Bucket': 'cmpt733sfu', 'Key': filename},
+    #                                          ExpiresIn=500)
     url = 'https://cmpt733sfu.s3.amazonaws.com/' + filename
     v_cap = cv2.VideoCapture(url)
-    print(response)
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     cv2.normalize(frame1, frame1, 0, 255, cv2.NORM_MINMAX)
@@ -109,10 +108,10 @@ def result(filename):
     height = int(frame.shape[0] * scale)
     resized_img_with_scaling = cv2.resize(frame, (width, height))
 
-    image = load_img(detected_face, target_size=(256, 256))
-    input_arr = img_to_array(image)
+    #image = load_img(detected_face, target_size=(256, 256))
+    input_arr = img_to_array(detected_face)
     input_arr = np.array([input_arr])  # Convert single image to a batch.
-    predictions = new_model.predict(input_arr)
+    #predictions = new_model.predict(input_arr)
 
     # img = img_to_array(detected_face) / 255.0
     # img = np.expand_dims(img, axis=0)
@@ -122,10 +121,11 @@ def result(filename):
     image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
     encoded_image = base64.encodebytes(image_content)
     to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
-    if predictions == "1":
-        return render_template('result.html', content=to_send)
-    else:
-        return render_template('result.html', content=to_send)
+    return render_template('result.html', content=to_send)
+    # if predictions == "1":
+    #     return render_template('result.html', content=to_send)
+    # else:
+    #     return render_template('result.html', content=to_send)
 
 
 if __name__ == "__main__":

@@ -109,7 +109,7 @@ def result(filename):
     #image = load_img(detected_face, target_size=(256, 256))
     input_arr = img_to_array(detected_face)
     input_arr = np.array([input_arr])  # Convert single image to a batch.
-    predictions = round(new_model.predict(input_arr)[0])
+    predictions = round(new_model.predict(input_arr)[0][0])
 
     # img = img_to_array(detected_face) / 255.0
     # img = np.expand_dims(img, axis=0)

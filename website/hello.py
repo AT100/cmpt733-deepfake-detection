@@ -8,33 +8,23 @@ import cv2
 import base64
 import boto3
 from PIL import Image
-from google.cloud import datastore
+from google.cloud import datastore, storage
 import keras
 from keras.preprocessing.image import img_to_array
 from keras.models import load_model
 import numpy as np
-# import gcsfs
-# import h5py
 import tensorflow as tf
-# from tensorflow.python.lib.io import file_io
+
 
 app = Flask(__name__)
 
-# MODEL_PATH = 'gs://cmpt733/model.h5'
-# FS = gcsfs.GCSFileSystem(project='cmpt733')
-# with FS.open(MODEL_PATH, 'rb') as model_file:
-#     model_gcs = h5py.File(model_file, 'r')
-#     new_model = load_model(model_gcs)
 
+storage_client = storage.Client()
+bucket = storage_client.bucket('cmpt733')
+blob = bucket.blob('model.h5')
+blob.download_to_filename('./model.h5')
+new_model = load_model('./model.h5')
 
-# model_file = file_io.FileIO(MODEL_PATH, mode='rb')
-#
-# temp_model_location = './model.h5'
-# temp_model_file = open(temp_model_location, 'wb')
-# temp_model_file.write(model_file.read())
-# temp_model_file.close()
-# model_file.close()
-# new_model = load_model(temp_model_location)
 
 #os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/dugongzzz/Downloads/cmpt733-309217-e4dd118f17bf.json"
 client = datastore.Client()
@@ -44,6 +34,7 @@ result = client.get(key)
 S3_KEY = result['s3_code']
 S3_CODE = result['s3_key']
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
+
 
 ALLOWED_EXTENSIONS = ["mp4"]
 

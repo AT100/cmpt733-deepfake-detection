@@ -4,6 +4,7 @@ facenet-pytorch
 opencv-python-headless
 boto3
 google-cloud-datastore
+google-cloud-storage
 Keras
 Keras-Preprocessing
 numpy

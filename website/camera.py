@@ -32,19 +32,20 @@ s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
 
 MODEL_PATH = 'https://storage.googleapis.com/cmpt733/model.h5'
 
-response = 'https://cmpt733sfu.s3.amazonaws.com/model.h5'
+#
+# storage_client = storage.Client()
+# bucket = storage_client.bucket('cmpt733')
+# blob = bucket.blob('model.h5')
+# blob.download_to_filename('./model.h5')
+# new_model = load_model('./model.h5')
 
-storage_client = storage.Client()
-bucket = storage_client.bucket('cmpt733')
-blob = bucket.blob('model.h5')
-blob.download_to_filename('./model.h5')
+new_model = load_model(MODEL_PATH)
 
-#new_model = load_model(response)
-# new_model = model_from_json(MODEL_PATH)
-# FS = gcsfs.GCSFileSystem(project='cmpt733')
-# with FS.open(MODEL_PATH, 'rb') as model_file:
-#     model_gcs = h5py.File(model_file, 'r')
-#     new_model = model_from_json(model_gcs)
+new_model = model_from_json(MODEL_PATH)
+FS = gcsfs.GCSFileSystem(project='cmpt733')
+with FS.open(MODEL_PATH, 'rb') as model_file:
+    model_gcs = h5py.File(model_file, 'r')
+    new_model = model_from_json(model_gcs)
 
 #model_file = file_io.FileIO(MODEL_PATH, mode='rb')
 # temp_model_location = './model.h5'

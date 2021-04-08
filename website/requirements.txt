@@ -9,4 +9,4 @@ Keras-Preprocessing
 numpy
 gcsfs
 h5py==2.10.0
-tensorflow
+tensorflow===2.4.1

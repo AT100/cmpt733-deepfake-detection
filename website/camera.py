@@ -11,16 +11,15 @@ from PIL import Image
 from google.cloud import datastore, storage
 #import keras
 #from keras.preprocessing.image import img_to_array
-from keras.models import load_model, model_from_json
+from keras.models import load_model
 import numpy as np
-import gcsfs
-import h5py
+#import h5py
 # import tensorflow as tf
-from tensorflow.python.lib.io import file_io
+#from tensorflow.python.lib.io import file_io
 
 app = Flask(__name__)
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/dugongzzz/Downloads/cmpt733-309217-e4dd118f17bf.json"
+#os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/Users/dugongzzz/Downloads/cmpt733-309217-e4dd118f17bf.json"
 
 client = datastore.Client()
 key = client.key('Settings', 5634161670881280)
@@ -30,33 +29,11 @@ S3_KEY = result['s3_code']
 S3_CODE = result['s3_key']
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY, aws_secret_access_key=S3_CODE)
 
-MODEL_PATH = 'https://storage.googleapis.com/cmpt733/model.h5'
-
-#
-# storage_client = storage.Client()
-# bucket = storage_client.bucket('cmpt733')
-# blob = bucket.blob('model.h5')
-# blob.download_to_filename('./model.h5')
-# new_model = load_model('./model.h5')
-
-new_model = load_model(MODEL_PATH)
-
-new_model = model_from_json(MODEL_PATH)
-FS = gcsfs.GCSFileSystem(project='cmpt733')
-with FS.open(MODEL_PATH, 'rb') as model_file:
-    model_gcs = h5py.File(model_file, 'r')
-    new_model = model_from_json(model_gcs)
-
-#model_file = file_io.FileIO(MODEL_PATH, mode='rb')
-# temp_model_location = './model.h5'
-# temp_model_file = open(temp_model_location, 'wb')
-# temp_model_file.write(model_file)
-#temp_model_file.close()
-#model_file.close()
-# new_model = load_model(temp_model_location)
-
-
-
+storage_client = storage.Client()
+bucket = storage_client.bucket('cmpt733')
+blob = bucket.blob('model.h5')
+blob.download_to_filename('./model.h5')
+new_model = load_model('./model.h5')
 
 ALLOWED_EXTENSIONS = ["mp4"]
 

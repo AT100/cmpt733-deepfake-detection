@@ -85,7 +85,7 @@ def result(filename):
     test = mtcnn(new_frame)
 
     if test is None:
-        render_template('video_fail.html')
+        return render_template('video_fail.html')
     else:
         # detect faces in the image
         faces = mtcnn.detect(new_frame)
@@ -121,7 +121,7 @@ def result(filename):
             else:
                 return render_template('result_fake.html', content=to_send)
         except Exception:
-            render_template('video_fail.html')
+            return render_template('video_fail.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

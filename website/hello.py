@@ -89,41 +89,39 @@ def result(filename):
     else:
         # detect faces in the image
         faces = mtcnn.detect(new_frame)
+        try:
+            for each in faces[0]:
+                each1 = each.tolist()
+                x, y, w, h = each1
+                top_left = int((int(y) + int(h)) / 2 - 128)
+                bottom_left = int((int(y) + int(h)) / 2 + 128)
 
-        for each in faces[0]:
-            each1 = each.tolist()
-            x, y, w, h = each1
-            top_left = int((int(y) + int(h)) / 2 - 128)
-            bottom_left = int((int(y) + int(h)) / 2 + 128)
+                top_right = int((int(x) + int(w)) / 2 - 128)
+                bottom_right = int((int(x) + int(w)) / 2 + 128)
 
-            top_right = int((int(x) + int(w)) / 2 - 128)
-            bottom_right = int((int(x) + int(w)) / 2 + 128)
+                detected_face = frame[top_left:bottom_left, top_right:bottom_right]
+                cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
 
-            detected_face = frame[top_left:bottom_left, top_right:bottom_right]
-            #detected_face = frame[int(y):int(h), int(x):int(w)]
-            #detected_face = frame[int(y):255, int(x):255]
-            cv2.rectangle(frame, (int(x), int(y)), (int(w), int(h)), (0, 255, 255), 3)
+            scale = 0.5
+            width = int(frame.shape[1] * scale)
+            height = int(frame.shape[0] * scale)
+            resized_img_with_scaling = cv2.resize(frame, (width, height))
 
-        scale = 0.5
-        width = int(frame.shape[1] * scale)
-        height = int(frame.shape[0] * scale)
-        resized_img_with_scaling = cv2.resize(frame, (width, height))
+            input_arr = img_to_array(detected_face)
+            input_arr = np.array([input_arr])  # Convert single image to a batch.
+            predictions = round(new_model.predict(input_arr)[0][0])
 
-        #image = load_img(detected_face, target_size=(256, 256))
-        input_arr = img_to_array(detected_face)
-        input_arr = np.array([input_arr])  # Convert single image to a batch.
-        predictions = round(new_model.predict(input_arr)[0][0])
+            # In memory
+            image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
+            encoded_image = base64.encodebytes(image_content)
+            to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
 
-        # In memory
-        image_content = cv2.imencode('.jpg', resized_img_with_scaling)[1].tostring()
-        encoded_image = base64.encodebytes(image_content)
-        to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
-
-        if predictions == 1:
-            return render_template('result.html', content=to_send)
-        else:
-            return render_template('result_fake.html', content=to_send)
-
+            if predictions == 1:
+                return render_template('result.html', content=to_send)
+            else:
+                return render_template('result_fake.html', content=to_send)
+        except Exception:
+            render_template('video_fail.html')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

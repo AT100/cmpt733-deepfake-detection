@@ -18,6 +18,17 @@ import tensorflow as tf
 app = Flask(__name__)
 
 
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('video_fail.html'), 404
+
+
+# Handling error 500 and displaying relevant web page
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('video_fail.html'), 500
+
+
 storage_client = storage.Client()
 bucket = storage_client.bucket('cmpt733')
 blob = bucket.blob('model.h5')

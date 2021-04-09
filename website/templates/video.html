@@ -2,9 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DeepFake Detection</title>
+    <title align="center">DeepFake Detection</title>
+    <style>
+    p { color:white;
+        text-align: center }
+    </style>
+    <style>
+    h1 { color:white;
+        text-align: center }
+    </style>
+    <style>
+    form {width:250px;
+    margin: 0 auto;
+}
+    </style>
     <h1 style="color:white;">DeepFake Detection</h1>
-    <p style="color:white">Please upload a video under 5MBs:</p>
+    <p style="color:white">Please upload a video under 5MBs and under 10 seconds:</p>
     <style>
       div {
         background-color: #1c87c9;
@@ -14,6 +27,11 @@
     </style>
 </head>
 <body>
+    <style>
+    form { width:250px;
+        margin: 0 auto;
+    }
+    </style>
       <form action = "#" method = "post"
          enctype = "multipart/form-data">
          <input type = "file" name = "file" />

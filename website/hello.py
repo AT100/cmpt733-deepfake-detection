@@ -67,7 +67,7 @@ def home():
             filename = secure_filename(file.filename)
             s3.upload_fileobj(
                 file,
-                'cmpt733sfu',
+                'cmpt733alpha',
                 file.filename,
                 ExtraArgs={
                     "ACL": 'public-read',
@@ -85,7 +85,8 @@ def result(filename):
     # response = s3.generate_presigned_url('get_object',
     #                                          Params={'Bucket': 'cmpt733sfu', 'Key': filename},
     #                                          ExpiresIn=500)
-    url = 'https://cmpt733sfu.s3.amazonaws.com/' + filename
+    url = 'https://cmpt733alpha.s3.us-east-2.amazonaws.com/' + filename
+
     v_cap = cv2.VideoCapture(url)
     _, frame = v_cap.read()
     frame1 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

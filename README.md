@@ -5,7 +5,7 @@ Our training dataset can be found at https://drive.google.com/drive/folders/19dX
 
 Our validation dataset can be found at https://drive.google.com/drive/folders/14N8b-MTdtfI1f8xZbW6UmhR5io66-xvC?usp=sharing
 
-Our Flask code and Web Templates can be found inside the "website" folder.
+Our web frontend is at https://cmpt733-309217.wn.r.appspot.com/. The associated Flask code and Web Templates can be found inside the "website" folder.
 
 We downloaded our Kaggle datasets with notebooks download_data.ipynb and Kaggle.ipynb via Kaggle API.
 

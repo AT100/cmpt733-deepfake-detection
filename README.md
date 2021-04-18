@@ -14,6 +14,8 @@ Our facial capture from video frames methods can be found in face_detection_Reti
 Our models can be found in inception.ipynb, inception_deepfake.ipynb, vgg16.ipynb, xception_model.ipynb and 
 mesonet_colab.ipynb.
 
+I would recommend running our models in Google Colab so that you can sync with our Google Drive datasets using "from google.colab import drive
+drive.mount("/content/drive")"
 
 
 

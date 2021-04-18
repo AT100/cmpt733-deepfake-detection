@@ -7,6 +7,13 @@ Our validation dataset can be found at https://drive.google.com/drive/folders/14
 
 Our Flask code and Web Templates can be found inside the "website" folder.
 
-We downloaded our Kaggle datasets with notebooks download_data.ipynb and Kaggle.ipynb
+We downloaded our Kaggle datasets with notebooks download_data.ipynb and Kaggle.ipynb via Kaggle API.
+
+Our facial capture from video frames methods can be found in face_detection_RetinaFace.ipynb, face_detection_cascade.ipynb and face_detection_mtcnn.ipynb.
+
+Our models can be found in inception.ipynb, inception_deepfake.ipynb, vgg16.ipynb, xception_model.ipynb and 
+mesonet_colab.ipynb.
+
+
 
 
